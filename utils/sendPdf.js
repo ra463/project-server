@@ -1,7 +1,7 @@
 const puppeteer = require("puppeteer");
 const fs = require("fs").promises;
 const os = require("os");
-const path = require("path");
+const { join } = require("path");
 
 exports.sendInvoice = async (product) => {
   let alltotal = 0;
