@@ -19,6 +19,7 @@ exports.sendInvoice = async (product) => {
     );
     const browser = await puppeteer.launch({
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      headless: true,
       userDataDir, // Specify a temporary directory for user data
     });
 
@@ -47,90 +48,79 @@ exports.sendInvoice = async (product) => {
           <span>infotech</span>
         </div>
       </div>
-      <div
+      <table
         style="
           font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
             Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue',
             sans-serif;
+          width: 100%;
+          border-collapse: collapse;
         "
       >
-        <ul
+        <thead>
+          <tr>
+            <th style="font-weight: bold; border-bottom: 1px solid #ebebeb;">Product Name</th>
+            <th style="font-weight: bold; border-bottom: 1px solid #ebebeb;">Qty</th>
+            <th style="font-weight: bold; border-bottom: 1px solid #ebebeb;">Rate</th>
+            <th style="font-weight: bold; border-bottom: 1px solid #ebebeb;">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${product
+            .map(
+              (item, index) => `
+            <tr key=${index} style="border-bottom: 1px solid #ebebeb;">
+              <td>${item.name}</td>
+              <td style="color: #7f88bd;">${item.qty}</td>
+              <td>${item.rate}</td>
+              <td>INR ${alltotal}</td>
+            </tr>
+          `
+            )
+            .join("")}
+        </tbody>
+      </table>
+      <div style="border-top: 2px solid #ebebeb; margin-top: 1.5rem">
+        <div
           style="
-            padding-left: 0;
             display: flex;
-            justify-content: space-between;
-            border-bottom: 1px solid #ebebeb;
-            padding-bottom: 1rem;
+            float: right;
+            flex-direction: column;
+            gap: 1rem;
+            width: 40%;
+            margin-top: 1rem;
           "
         >
-          <li style="font-weight: bold; list-style: none">Product Name</li>
-          <li style="font-weight: bold; list-style: none">Qty</li>
-          <li style="font-weight: bold; list-style: none">Rate</li>
-          <li style="font-weight: bold; list-style: none">Total</li>
-        </ul>
-        ${product
-          .map(
-            (item, index) => `
-          <ul
-            key=${index}
-            style="
-              padding-left: 0;
-              display: flex;
-              justify-content: space-between;
-              font-size: 14px;
-              margin-bottom: 2rem;
-            "
-          >
-            <li style="list-style: none">${item.name}</li>
-            <li style="list-style: none; color: #7f88bd">${item.qty}</li>
-            <li style="list-style: none">${item.rate}</li>
-            <li style="list-style: none">INR ${alltotal}</li>
-          </ul>
-        `
-          )
-          .join("")}
-        <div style="border-top: 2px solid #ebebeb; margin-top: 1.5rem">
           <div
             style="
               display: flex;
-              float: right;
-              flex-direction: column;
-              gap: 1rem;
-              width: 40%;
-              margin-top: 1rem;
+              justify-content: space-between;
+              align-items: center;
             "
           >
-            <div
-              style="
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-              "
-            >
-              <span style="font-weight: bold">Total</span><span>INR ${alltotal}</span>
-            </div>
-            <div
-              style="
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-              "
-            >
-              <span>GST</span><span style="color: rgb(180, 180, 180)">18%</span>
-            </div>
-            <div
-              style="
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 1rem 0;
-                border-bottom: 2px solid #ebebeb;
-                border-top: 2px solid #ebebeb;
-              "
-            >
-              <span style="font-weight: bold">Grand Total</span
-              ><span style="color: #7f88bd">₹ ${grandtotal}</span>
-            </div>
+            <span style="font-weight: bold">Total</span><span>INR ${alltotal}</span>
+          </div>
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+            "
+          >
+            <span>GST</span><span style="color: rgb(180, 180, 180)">18%</span>
+          </div>
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              padding: 1rem 0;
+              border-bottom: 2px solid #ebebeb;
+              border-top: 2px solid #ebebeb;
+            "
+          >
+            <span style="font-weight: bold">Grand Total</span
+            ><span style="color: #7f88bd">₹ ${grandtotal}</span>
           </div>
         </div>
       </div>
@@ -139,7 +129,7 @@ exports.sendInvoice = async (product) => {
       style="
         font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
           Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue',
-          sans-serif;margin-top: 15rem;
+          sans-serif;margin-top: 5rem;
       "
     >
       <div style="font-size: 14px;padding-left: 2rem;margin-left:2rem;">
