@@ -14,20 +14,6 @@ exports.sendInvoice = async (product) => {
   grandtotal = alltotal + (alltotal * 18) / 100;
 
   try {
-    const userDataDir = await fs.mkdtemp(
-      path.join(os.tmpdir(), "puppeteer_temp")
-    );
-    const browser = await puppeteer.launch({
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-      headless: true,
-      ignoreHTTPSErrors: true,
-      devtools: false,
-      executablePath: "/usr/bin/chromium-browser",
-      userDataDir, // Specify a temporary directory for user data
-    });
-
-    const page = await browser.newPage();
-
     const htmlTemplate = `<div
       style="
         display: flex;
@@ -150,6 +136,12 @@ exports.sendInvoice = async (product) => {
       </div>
     </footer>`;
 
+    const browser = await puppeteer.launch({
+      // headless:false,
+      userDataDir: join(__dirname, ".cache", `puppeteer`, `${Date.now()}`),
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
+    const page = await browser.newPage();
     await page.setContent(htmlTemplate);
 
     const pdfBuffer = await page.pdf({
@@ -160,8 +152,10 @@ exports.sendInvoice = async (product) => {
     await browser.close();
 
     // Remove the temporary user data directory
-    await fs.rm(userDataDir, { recursive: true });
-
+    fs.rmdirSync(join(__dirname, ".cache", `puppeteer`, `${Date.now()}`), {
+      recursive: true,
+      // force: true,
+    });
     return pdfBuffer;
   } catch (error) {
     console.error("Error sending invoice:", error);
