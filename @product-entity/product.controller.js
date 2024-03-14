@@ -8,12 +8,12 @@ exports.createProduct = catchAsyncError(async (req, res, next) => {
   const { product_array } = req.body;
   if (!product_array) return next(new ErrorHandler("Please add product", 400));
 
-  console.log(product_array);
-
   const user = await User.findById(req.userId);
   if (!user) return next(new ErrorHandler("Please Login First", 404));
 
   product_array.forEach(async (product) => {
+    if (product.qty === 0 || product.rate === 0)
+      return next(new ErrorHandler("Please add qty and rate", 400));
     await Product.create({
       user: req.userId,
       name: product.name,

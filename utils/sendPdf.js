@@ -126,17 +126,17 @@ exports.sendInvoice = async (product) => {
       style="
         font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
           Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue',
-          sans-serif;margin-top: 3rem;
+          sans-serif;margin-top: 15rem;
       "
     >
-      <div style="font-size: 14px;padding-left: 2rem;margin-bottom: 1rem;">
+      <div style="font-size: 14px;padding-left: 2rem;margin-left:2rem;">
         <span style="font-weight: bold">Valid Until</span>: 12/04/23
       </div>
-      <div style="background-color: rgb(57, 56, 56); color: white; padding: 1px 3rem;border-radius: 50px;margin: 0 2rem;">
-        <p style="margin-bottom: 0; font-weight: bold; font-size: 14px">
+      <div style="background-color: #2d2c2c; color: white; padding: 1px 3rem;border-radius: 50px;margin: 0 1rem;">
+        <p style="background-color: #2d2c2c; margin-bottom: 0; font-weight: bold; font-size: 14px">
           Terms and Conditions
         </p>
-        <p style="margin-top: 0; font-size: 13px">
+        <p style="background-color: #2d2c2c; margin-top: 0; font-size: 13px">
           We are happy to supply any further information you need and trust that
           you call on us to fill your order, which will receive our prompt and
           careful attention.
