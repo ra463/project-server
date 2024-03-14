@@ -20,6 +20,9 @@ exports.sendInvoice = async (product) => {
     const browser = await puppeteer.launch({
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
       headless: true,
+      ignoreHTTPSErrors: true,
+      devtools: false,
+      executablePath: "/usr/bin/chromium-browser",
       userDataDir, // Specify a temporary directory for user data
     });
 
