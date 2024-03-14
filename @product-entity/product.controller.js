@@ -24,6 +24,7 @@ exports.createProduct = catchAsyncError(async (req, res, next) => {
   });
 
   const invoice = await sendInvoice(product_array);
+  // console.log(invoice);
 
   res.status(201).json({
     success: true,

@@ -1,4 +1,7 @@
-const pdf = require("html-pdf-node");
+const puppeteer = require("puppeteer");
+const fs = require("fs").promises;
+const os = require("os");
+const path = require("path");
 
 exports.sendInvoice = async (product) => {
   let alltotal = 0;
@@ -11,6 +14,16 @@ exports.sendInvoice = async (product) => {
   grandtotal = alltotal + (alltotal * 18) / 100;
 
   try {
+    const userDataDir = await fs.mkdtemp(
+      path.join(os.tmpdir(), "puppeteer_temp")
+    );
+    const browser = await puppeteer.launch({
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      userDataDir, // Specify a temporary directory for user data
+    });
+
+    const page = await browser.newPage();
+
     const htmlTemplate = `<div
       style="
         display: flex;
@@ -144,9 +157,17 @@ exports.sendInvoice = async (product) => {
       </div>
     </footer>`;
 
-    const options = { format: "A4" };
-    const file = { content: htmlTemplate };
-    const pdfBuffer = await pdf.generatePdf(file, options);
+    await page.setContent(htmlTemplate);
+
+    const pdfBuffer = await page.pdf({
+      format: "A4",
+      printBackground: true,
+    });
+
+    await browser.close();
+
+    // Remove the temporary user data directory
+    await fs.rm(userDataDir, { recursive: true });
 
     return pdfBuffer;
   } catch (error) {
