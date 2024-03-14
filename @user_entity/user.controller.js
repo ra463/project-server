@@ -34,17 +34,18 @@ exports.registerUser = catchAsyncError(async (req, res, next) => {
 
 exports.loginUser = catchAsyncError(async (req, res, next) => {
   const { email, password } = req.body;
-
   if (!email || !password)
     return next(new ErrorHandler("Please enter email and password", 400));
 
-  const user = await User.findOne({ email: email.toLowerCase() }).select(
-    "+password"
-  );
+  const user = await User.findOne({
+    email: { $regex: new RegExp(`^${email}$`, "i") },
+  }).select("+password");
   if (!user) return next(new ErrorHandler("Account not found", 401));
 
   const isMatch = await user.matchPassword(password);
   if (!isMatch) return next(new ErrorHandler("Invalid credentials", 401));
 
+
+  user.password = undefined;
   sendData(res, 200, user, "Logged in successfully");
 });
