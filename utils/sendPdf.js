@@ -137,7 +137,6 @@ exports.sendInvoice = async (product) => {
     </footer>`;
 
     const browser = await puppeteer.launch({
-      // headless:false,
       userDataDir: join(__dirname, ".cache", `puppeteer`, `${Date.now()}`),
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
