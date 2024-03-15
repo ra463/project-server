@@ -2,6 +2,7 @@ const puppeteer = require("puppeteer");
 const fs = require("fs").promises;
 const os = require("os");
 const path = require("path");
+const { cacheDirectory } = require("../puppeteer.config.cjs");
 
 exports.sendInvoice = async (product) => {
   let alltotal = 0;
@@ -14,12 +15,11 @@ exports.sendInvoice = async (product) => {
   grandtotal = alltotal + (alltotal * 18) / 100;
 
   try {
-    const userDataDir = await fs.mkdtemp(
-      path.join(os.tmpdir(), "puppeteer_temp")
-    );
+    // const userDataDir = await fs.mkdtemp(
+    //   path.join(os.tmpdir(), "puppeteer_temp")
+    // );
     const browser = await puppeteer.launch({
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
-      userDataDir, // Specify a temporary directory for user data
     });
 
     const page = await browser.newPage();
@@ -155,7 +155,7 @@ exports.sendInvoice = async (product) => {
           careful attention.
         </p>
       </div>
-    </footer>`
+    </footer>`;
 
     await page.setContent(htmlTemplate);
     const pdfBuffer = await page.pdf({
@@ -164,7 +164,7 @@ exports.sendInvoice = async (product) => {
     });
 
     await browser.close();
-    await fs.rm(userDataDir, { recursive: true });
+    // await fs.rm(userDataDir, { recursive: true });
 
     return pdfBuffer;
   } catch (error) {
